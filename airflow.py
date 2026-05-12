@@ -2,8 +2,10 @@
 #  TRAINING MODEL (NO WINDOWS)
 # ============================================
 
+import argparse
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
 import pandas as pd
@@ -11,13 +13,13 @@ import numpy as np
 import joblib
 import os
 
+from config import SENSOR_FEATURES as FEATURES
+
+p = argparse.ArgumentParser(add_help=False)
+p.add_argument("--model_type", default="logistic", choices=["logistic", "random_forest"])
+args, _ = p.parse_known_args()
+
 df = pd.read_csv("sensor_data.csv")
-FEATURES = [
-    "front_corr", "sideL_corr", "sideR_corr",
-    "d_front", "d_sideL", "d_sideR",
-    "asym", "turbulence", "internal_pressure",
-    "vibration", "wind_speed"
-]
 X = df[FEATURES].values
 y = df["label"].values
 scaler = StandardScaler()
@@ -25,16 +27,16 @@ X_scaled = scaler.fit_transform(X)
 X_train, X_test, y_train, y_test = train_test_split(
     X_scaled, y, test_size=0.2, random_state=42
 )
-model = LogisticRegression(
-    max_iter=300,
-    multi_class='multinomial'
-)
+
+if args.model_type == "random_forest":
+    model = RandomForestClassifier(n_estimators=200, random_state=42, n_jobs=-1)
+else:
+    model = LogisticRegression(max_iter=300, multi_class="multinomial")
+
 model.fit(X_train, y_train)
 pred = model.predict(X_test)
-print("Sensor model accuracy:", accuracy_score(y_test, pred))
+print(f"Sensor model ({args.model_type}) accuracy:", accuracy_score(y_test, pred))
 print(classification_report(y_test, pred))
-print("W shape:", model.coef_.shape)
-print("b shape:", model.intercept_.shape)
 joblib.dump(model, "model.pkl")
 joblib.dump(scaler, "scaler.pkl")
 print("Sensor model saved -> model.pkl / scaler.pkl")
