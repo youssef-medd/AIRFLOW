@@ -41,13 +41,14 @@ def evaluate(model, loader, criterion):
     return total_loss / n, correct / n
 
 
-def train(data_root: str, arch: str = "resnet18", save_path: str = DEFAULT_CV_MODEL):
+def train(data_root: str, arch: str = "resnet18", save_path: str = DEFAULT_CV_MODEL,
+          patience: int = PATIENCE):
     train_dl, val_dl = get_loaders(data_root, batch_size=BATCH_SIZE)
     model     = build_model(arch).to(DEVICE)
     criterion = nn.CrossEntropyLoss()
     optimizer = AdamW(model.parameters(), lr=LR, weight_decay=WEIGHT_DECAY)
     scheduler = CosineAnnealingLR(optimizer, T_max=EPOCHS)
-    stopper   = EarlyStopping(patience=PATIENCE, save_path=save_path)
+    stopper   = EarlyStopping(patience=patience, save_path=save_path)
 
     for epoch in range(1, EPOCHS + 1):
         tr_loss, tr_acc = train_one_epoch(model, train_dl, optimizer, criterion)
@@ -68,6 +69,7 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--data",  required=True)
     p.add_argument("--arch",  default="resnet18")
-    p.add_argument("--out",   default=DEFAULT_CV_MODEL)
+    p.add_argument("--out",      default=DEFAULT_CV_MODEL)
+    p.add_argument("--patience", type=int, default=PATIENCE)
     args = p.parse_args()
-    train(args.data, args.arch, args.out)
+    train(args.data, args.arch, args.out, args.patience)
