@@ -53,8 +53,9 @@ def train(data_root: str, arch: str = "resnet18", save_path: str = DEFAULT_CV_MO
         tr_loss, tr_acc = train_one_epoch(model, train_dl, optimizer, criterion)
         vl_loss, vl_acc = evaluate(model, val_dl, criterion)
         scheduler.step()
+        improved = stopper.best_score is None or vl_acc > stopper.best_score + stopper.min_delta
         print(f"Epoch {epoch:02d} | train_loss={tr_loss:.4f} acc={tr_acc:.3f} | "
-              f"val_loss={vl_loss:.4f} acc={vl_acc:.3f}")
+              f"val_loss={vl_loss:.4f} acc={vl_acc:.3f}" + (" *" if improved else ""))
         if stopper.step(vl_acc, model):
             print(f"Early stop at epoch {epoch}.")
             break
