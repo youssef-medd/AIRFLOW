@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR
-from config import EPOCHS, BATCH_SIZE, LR, WEIGHT_DECAY, DEFAULT_CV_MODEL
+from config import EPOCHS, BATCH_SIZE, LR, WEIGHT_DECAY, PATIENCE, DEFAULT_CV_MODEL
 from cv_model import build_model
 from cv_dataloader import get_loaders
 from early_stopping import EarlyStopping
@@ -47,7 +47,7 @@ def train(data_root: str, arch: str = "resnet18", save_path: str = DEFAULT_CV_MO
     criterion = nn.CrossEntropyLoss()
     optimizer = AdamW(model.parameters(), lr=LR, weight_decay=WEIGHT_DECAY)
     scheduler = CosineAnnealingLR(optimizer, T_max=EPOCHS)
-    stopper   = EarlyStopping(patience=5, save_path=save_path)
+    stopper   = EarlyStopping(patience=PATIENCE, save_path=save_path)
 
     for epoch in range(1, EPOCHS + 1):
         tr_loss, tr_acc = train_one_epoch(model, train_dl, optimizer, criterion)
