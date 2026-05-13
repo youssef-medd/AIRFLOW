@@ -11,9 +11,8 @@ class EarlyStopping:
         self.stop       = False
 
     def step(self, val_acc: float, model: torch.nn.Module) -> bool:
-        score = val_acc
-        if self.best_score is None or score > self.best_score + self.min_delta:
-            self.best_score = score
+        if self.best_score is None or val_acc > self.best_score + self.min_delta:
+            self.best_score = val_acc
             self.counter    = 0
             torch.save(model.state_dict(), self.save_path)
         else:
