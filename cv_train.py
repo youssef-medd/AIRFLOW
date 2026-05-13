@@ -20,6 +20,7 @@ def train_one_epoch(model, loader, optimizer, criterion):
         logits = model(imgs)
         loss   = criterion(logits, labels)
         loss.backward()
+        nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
         optimizer.step()
         total_loss += loss.item() * len(imgs)
         correct    += (logits.argmax(1) == labels).sum().item()
