@@ -67,6 +67,6 @@ if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument("--data",  required=True)
     p.add_argument("--arch",  default="resnet18")
-    p.add_argument("--out",   default="cv_model.pt")
+    p.add_argument("--out",   default=DEFAULT_CV_MODEL)
     args = p.parse_args()
     train(args.data, args.arch, args.out)
