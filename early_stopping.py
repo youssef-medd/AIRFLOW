@@ -22,6 +22,11 @@ class EarlyStopping:
                 self.stop = True
         return self.stop
 
+    def reset(self) -> None:
+        self.best_score = None
+        self.counter    = 0
+        self.stop       = False
+
     def load_best(self, model: torch.nn.Module) -> torch.nn.Module:
         model.load_state_dict(torch.load(self.save_path, map_location="cpu", weights_only=True))
         return model
