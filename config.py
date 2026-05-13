@@ -10,9 +10,10 @@ SENSOR_FEATURES = [
 
 IMG_SIZE    = 224
 BATCH_SIZE  = 32
-EPOCHS      = 30
-LR          = 1e-4
+EPOCHS       = 30
+LR           = 1e-4
 WEIGHT_DECAY = 1e-4
+PATIENCE     = 5
 
 DEFAULT_SENSOR_MODEL = "model.pkl"
 DEFAULT_SCALER       = "scaler.pkl"
