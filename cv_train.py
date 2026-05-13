@@ -2,16 +2,13 @@ import torch
 import torch.nn as nn
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR
-from tqdm import tqdm
-
+from config import EPOCHS, BATCH_SIZE, LR, WEIGHT_DECAY, DEFAULT_CV_MODEL
 from cv_model import build_model
 from cv_dataloader import get_loaders
+from early_stopping import EarlyStopping
 
 
-EPOCHS     = 30
-BATCH_SIZE = 32
-LR         = 1e-4
-DEVICE     = "cuda" if torch.cuda.is_available() else "cpu"
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 def train_one_epoch(model, loader, optimizer, criterion):
@@ -43,24 +40,25 @@ def evaluate(model, loader, criterion):
     return total_loss / n, correct / n
 
 
-def train(data_root: str, arch: str = "resnet18", save_path: str = "cv_model.pt"):
+def train(data_root: str, arch: str = "resnet18", save_path: str = DEFAULT_CV_MODEL):
     train_dl, val_dl = get_loaders(data_root, batch_size=BATCH_SIZE)
     model     = build_model(arch).to(DEVICE)
     criterion = nn.CrossEntropyLoss()
-    optimizer = AdamW(model.parameters(), lr=LR, weight_decay=1e-4)
+    optimizer = AdamW(model.parameters(), lr=LR, weight_decay=WEIGHT_DECAY)
     scheduler = CosineAnnealingLR(optimizer, T_max=EPOCHS)
+    stopper   = EarlyStopping(patience=5, save_path=save_path)
 
-    best_val_acc = 0.0
     for epoch in range(1, EPOCHS + 1):
         tr_loss, tr_acc = train_one_epoch(model, train_dl, optimizer, criterion)
         vl_loss, vl_acc = evaluate(model, val_dl, criterion)
         scheduler.step()
         print(f"Epoch {epoch:02d} | train_loss={tr_loss:.4f} acc={tr_acc:.3f} | "
               f"val_loss={vl_loss:.4f} acc={vl_acc:.3f}")
-        if vl_acc > best_val_acc:
-            best_val_acc = vl_acc
-            torch.save(model.state_dict(), save_path)
-    print(f"Best val acc: {best_val_acc:.3f} — model saved to {save_path}")
+        if stopper.step(vl_acc, model):
+            print(f"Early stop at epoch {epoch}.")
+            break
+
+    print(f"Best val acc: {stopper.best_score:.3f} — model saved to {save_path}")
 
 
 if __name__ == "__main__":
