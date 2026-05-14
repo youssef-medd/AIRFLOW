@@ -29,3 +29,18 @@ def check_class_balance(df: pd.DataFrame) -> dict:
     balance = {LABEL_NAMES[k] if isinstance(k, int) else k: {"count": int(v), "pct": round(v / total * 100, 2)}
                for k, v in counts.items()}
     return balance
+
+
+def check_duplicates(df: pd.DataFrame) -> int:
+    return int(df.duplicated(subset=SENSOR_FEATURES).sum())
+
+
+def check_feature_correlation(df: pd.DataFrame, threshold: float = 0.95) -> list[tuple]:
+    corr = df[SENSOR_FEATURES].corr().abs()
+    pairs = []
+    cols = corr.columns.tolist()
+    for i in range(len(cols)):
+        for j in range(i + 1, len(cols)):
+            if corr.iloc[i, j] >= threshold:
+                pairs.append((cols[i], cols[j], round(float(corr.iloc[i, j]), 4)))
+    return pairs
