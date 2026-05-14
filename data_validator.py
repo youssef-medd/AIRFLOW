@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from config import SENSOR_FEATURES, LABEL_NAMES
+from config import SENSOR_FEATURES, LABEL_NAMES, SENSOR_RANGES
 
 
 def check_missing_values(df: pd.DataFrame) -> dict:
@@ -9,3 +9,15 @@ def check_missing_values(df: pd.DataFrame) -> dict:
     result = {col: {"count": int(n), "pct": round(n / total * 100, 2)}
               for col, n in missing.items() if n > 0}
     return result
+
+
+def check_value_ranges(df: pd.DataFrame) -> dict:
+    out_of_range = {}
+    for col, (lo, hi) in SENSOR_RANGES.items():
+        if col not in df.columns:
+            continue
+        mask = (df[col] < lo) | (df[col] > hi)
+        n = int(mask.sum())
+        if n:
+            out_of_range[col] = {"count": n, "min": float(df[col].min()), "max": float(df[col].max()), "range": (lo, hi)}
+    return out_of_range
