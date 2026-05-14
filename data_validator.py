@@ -21,3 +21,11 @@ def check_value_ranges(df: pd.DataFrame) -> dict:
         if n:
             out_of_range[col] = {"count": n, "min": float(df[col].min()), "max": float(df[col].max()), "range": (lo, hi)}
     return out_of_range
+
+
+def check_class_balance(df: pd.DataFrame) -> dict:
+    counts = df["label"].value_counts().to_dict()
+    total = len(df)
+    balance = {LABEL_NAMES[k] if isinstance(k, int) else k: {"count": int(v), "pct": round(v / total * 100, 2)}
+               for k, v in counts.items()}
+    return balance
