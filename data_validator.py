@@ -44,3 +44,14 @@ def check_feature_correlation(df: pd.DataFrame, threshold: float = 0.95) -> list
             if corr.iloc[i, j] >= threshold:
                 pairs.append((cols[i], cols[j], round(float(corr.iloc[i, j]), 4)))
     return pairs
+
+
+def validate(df: pd.DataFrame, corr_threshold: float = 0.95) -> dict:
+    return {
+        "rows": len(df),
+        "missing": check_missing_values(df),
+        "out_of_range": check_value_ranges(df),
+        "class_balance": check_class_balance(df),
+        "duplicates": check_duplicates(df),
+        "high_corr_pairs": check_feature_correlation(df, corr_threshold),
+    }
