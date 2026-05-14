@@ -14,12 +14,22 @@ import joblib
 import os
 
 from config import SENSOR_FEATURES as FEATURES
+from data_validator import validate
 
 p = argparse.ArgumentParser(add_help=False)
 p.add_argument("--model_type", default="logistic", choices=["logistic", "random_forest"])
 args, _ = p.parse_known_args()
 
 df = pd.read_csv("sensor_data.csv")
+
+report = validate(df)
+print(f"[validator] rows={report['rows']}  duplicates={report['duplicates']}")
+if report["missing"]:
+    print("[validator] missing values:", report["missing"])
+if report["out_of_range"]:
+    print("[validator] out-of-range columns:", list(report["out_of_range"].keys()))
+if report["high_corr_pairs"]:
+    print("[validator] highly correlated pairs:", report["high_corr_pairs"])
 X = df[FEATURES].values
 y = df["label"].values
 scaler = StandardScaler()
