@@ -16,6 +16,10 @@ def batch_predict(model_path: str, scaler_path: str, csv_path: str,
     if missing:
         raise ValueError(f"CSV missing columns: {missing}")
 
+    nan_rows = int(df[SENSOR_FEATURES].isnull().any(axis=1).sum())
+    if nan_rows:
+        raise ValueError(f"CSV contains {nan_rows} row(s) with NaN in sensor features")
+
     X       = df[SENSOR_FEATURES].values
     X_sc    = scaler.transform(X)
     preds   = model.predict(X_sc)
