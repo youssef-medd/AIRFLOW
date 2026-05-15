@@ -23,8 +23,9 @@ def _generate_class(label: str, n: int, rng: np.random.Generator) -> pd.DataFram
 def generate_sensor_data(n_per_class: int = 500, seed: int = 42) -> pd.DataFrame:
     rng    = np.random.default_rng(seed)
     frames = [_generate_class(lbl, n_per_class, rng) for lbl in LABEL_NAMES]
-    df     = pd.concat(frames, ignore_index=True)
-    return df.sample(frac=1, random_state=seed).reset_index(drop=True)
+    df  = pd.concat(frames, ignore_index=True)
+    idx = rng.permutation(len(df))
+    return df.iloc[idx].reset_index(drop=True)
 
 
 if __name__ == "__main__":
