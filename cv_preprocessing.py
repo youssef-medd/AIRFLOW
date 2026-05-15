@@ -41,4 +41,10 @@ def apply_optical_flow(prev: np.ndarray, curr: np.ndarray) -> np.ndarray:
 
 
 def batch_preprocess(paths: list) -> np.ndarray:
-    return np.stack([preprocess(load_image(p)) for p in paths])
+    imgs = []
+    for p in paths:
+        try:
+            imgs.append(preprocess(load_image(p)))
+        except Exception as exc:
+            raise RuntimeError(f"Failed to preprocess image: {p}") from exc
+    return np.stack(imgs)
