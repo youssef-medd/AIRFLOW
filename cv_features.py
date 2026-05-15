@@ -40,10 +40,9 @@ def extract_all(img_path: str, prev_img: np.ndarray = None) -> np.ndarray:
     chist = extract_color_histogram(img)
     parts = [hog, chist]
     if prev_img is not None:
-        import cv2 as _cv2
-        prev_gray = _cv2.cvtColor((prev_img * 255).astype(np.uint8), _cv2.COLOR_RGB2GRAY)
-        curr_gray = _cv2.cvtColor((img    * 255).astype(np.uint8), _cv2.COLOR_RGB2GRAY)
-        flow = _cv2.calcOpticalFlowFarneback(
+        prev_gray = cv2.cvtColor((prev_img * 255).astype(np.uint8), cv2.COLOR_RGB2GRAY)
+        curr_gray = cv2.cvtColor((img      * 255).astype(np.uint8), cv2.COLOR_RGB2GRAY)
+        flow = cv2.calcOpticalFlowFarneback(
             prev_gray, curr_gray, None,
             0.5, 3, 15, 3, 5, 1.2, 0
         )
