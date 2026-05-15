@@ -26,6 +26,8 @@ class EarlyStopping:
         self.counter    = 0
         self.stop       = False
 
-    def load_best(self, model: torch.nn.Module) -> torch.nn.Module:
-        model.load_state_dict(torch.load(self.save_path, map_location="cpu", weights_only=True))
+    def load_best(self, model: torch.nn.Module,
+                  map_location: str = None) -> torch.nn.Module:
+        device = map_location or next(model.parameters()).device
+        model.load_state_dict(torch.load(self.save_path, map_location=device, weights_only=True))
         return model

@@ -61,6 +61,7 @@ def train(data_root: str, arch: str = "resnet18", save_path: str = DEFAULT_CV_MO
             print(f"Early stop at epoch {epoch}.")
             break
 
+    stopper.load_best(model)
     print(f"Best val acc: {stopper.best_score:.3f} — model saved to {save_path}")
 
 

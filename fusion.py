@@ -45,7 +45,11 @@ def fuse_numpy(sensor_vec: np.ndarray, image_vec: np.ndarray,
 def attention_fusion(sensor_vec: np.ndarray, image_vec: np.ndarray) -> np.ndarray:
     s_norm = sensor_vec / (np.linalg.norm(sensor_vec) + 1e-8)
     v_norm = image_vec  / (np.linalg.norm(image_vec)  + 1e-8)
-    score_s = np.exp(s_norm.dot(s_norm))
-    score_v = np.exp(v_norm.dot(v_norm))
+    # Use entropy-based confidence: lower entropy = higher certainty = higher weight
+    def _confidence(v: np.ndarray) -> float:
+        p = np.abs(v) / (np.abs(v).sum() + 1e-8)
+        return float(np.exp(-np.sum(p * np.log(p + 1e-8))))
+    score_s = _confidence(sensor_vec)
+    score_v = _confidence(image_vec)
     total   = score_s + score_v
     return (score_s / total) * s_norm + (score_v / total) * v_norm
