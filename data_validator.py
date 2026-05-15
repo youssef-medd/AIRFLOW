@@ -36,14 +36,11 @@ def check_duplicates(df: pd.DataFrame) -> int:
 
 
 def check_feature_correlation(df: pd.DataFrame, threshold: float = 0.95) -> list[tuple]:
-    corr = df[SENSOR_FEATURES].corr().abs()
-    pairs = []
-    cols = corr.columns.tolist()
-    for i in range(len(cols)):
-        for j in range(i + 1, len(cols)):
-            if corr.iloc[i, j] >= threshold:
-                pairs.append((cols[i], cols[j], round(float(corr.iloc[i, j]), 4)))
-    return pairs
+    corr  = df[SENSOR_FEATURES].corr().abs()
+    upper = corr.where(np.triu(np.ones(corr.shape, dtype=bool), k=1))
+    high  = upper.stack()
+    high  = high[high >= threshold]
+    return [(i, j, round(float(v), 4)) for (i, j), v in high.items()]
 
 
 def validate(df: pd.DataFrame, corr_threshold: float = 0.95) -> dict:
