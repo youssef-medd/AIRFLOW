@@ -37,9 +37,9 @@ class SensorImageFusion(nn.Module):
 
 def fuse_numpy(sensor_vec: np.ndarray, image_vec: np.ndarray,
                weights: tuple = (0.4, 0.6)) -> np.ndarray:
-    s = sensor_vec / (np.linalg.norm(sensor_vec) + 1e-8)
-    v = image_vec  / (np.linalg.norm(image_vec)  + 1e-8)
-    return weights[0] * s + weights[1] * v
+    # L2 normalization distorts probability vectors; blend then re-normalize by sum
+    fused = weights[0] * sensor_vec + weights[1] * image_vec
+    return fused / (fused.sum() + 1e-8)
 
 
 def attention_fusion(sensor_vec: np.ndarray, image_vec: np.ndarray) -> np.ndarray:
