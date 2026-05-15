@@ -39,7 +39,7 @@ class AirflowImageDataset(Dataset):
             folder = os.path.join(root, label_name)
             if not os.path.isdir(folder):
                 continue
-            for fname in os.listdir(folder):
+            for fname in sorted(os.listdir(folder)):
                 if fname.lower().endswith((".jpg", ".jpeg", ".png")):
                     self.samples.append((os.path.join(folder, fname), label_id))
 
