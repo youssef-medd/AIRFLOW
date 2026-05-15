@@ -22,7 +22,7 @@ class AirflowAI:
         self.sensor_model = joblib.load(sensor_model_path)
         self.device       = "cuda" if torch.cuda.is_available() else "cpu"
         self.cnn          = build_model(arch, pretrained=False).to(self.device)
-        self.cnn.load_state_dict(torch.load(cnn_model_path, map_location=self.device))
+        self.cnn.load_state_dict(torch.load(cnn_model_path, map_location=self.device, weights_only=True))
         self.cnn.eval()
 
     def predict_sensor(self, sensor_row: np.ndarray) -> int:
