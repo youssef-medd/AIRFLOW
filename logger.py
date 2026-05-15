@@ -9,6 +9,7 @@ def get_logger(name: str = "airflow_ai", log_file: str = None) -> logging.Logger
         return logger
 
     logger.setLevel(logging.DEBUG)
+    logger.propagate = False
     fmt = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s",
                             datefmt="%Y-%m-%d %H:%M:%S")
 
