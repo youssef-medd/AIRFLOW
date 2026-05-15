@@ -55,8 +55,11 @@ class AirflowImageDataset(Dataset):
 def get_loaders(root: str, batch_size: int = 32, num_workers: int = 4):
     train_ds = AirflowImageDataset(root, split="train")
     val_ds   = AirflowImageDataset(root, split="val")
+    persist  = num_workers > 0
     train_dl = DataLoader(train_ds, batch_size=batch_size, shuffle=True,
-                          num_workers=num_workers, pin_memory=True)
+                          num_workers=num_workers, pin_memory=True,
+                          persistent_workers=persist)
     val_dl   = DataLoader(val_ds,   batch_size=batch_size, shuffle=False,
-                          num_workers=num_workers, pin_memory=True)
+                          num_workers=num_workers, pin_memory=True,
+                          persistent_workers=persist)
     return train_dl, val_dl
