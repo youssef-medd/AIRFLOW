@@ -32,3 +32,6 @@ PATIENCE     = 5
 DEFAULT_SENSOR_MODEL = "model.pkl"
 DEFAULT_SCALER       = "scaler.pkl"
 DEFAULT_CV_MODEL     = "cv_model.pt"
+
+DROPOUT_RATE = 0.3
+SEED         = 42
