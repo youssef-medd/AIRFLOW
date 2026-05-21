@@ -25,3 +25,12 @@ def print_metrics(results: dict) -> None:
     print(header)
     for i, row in enumerate(results["confusion_matrix"]):
         print(f"{LABEL_NAMES[i][:6]:>6} " + "  ".join(f"{v:>6}" for v in row))
+
+
+def per_class_accuracy(confusion_mat: np.ndarray) -> dict:
+    totals = confusion_mat.sum(axis=1)
+    diag   = np.diag(confusion_mat)
+    return {
+        name: float(diag[i] / totals[i]) if totals[i] > 0 else 0.0
+        for i, name in enumerate(LABEL_NAMES)
+    }
