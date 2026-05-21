@@ -26,6 +26,10 @@ class EarlyStopping:
         self.counter    = 0
         self.stop       = False
 
+    def reset_counter(self) -> None:
+        self.counter = 0
+        self.stop    = False
+
     def load_best(self, model: torch.nn.Module,
                   map_location: str = None) -> torch.nn.Module:
         device = map_location or next(model.parameters()).device
