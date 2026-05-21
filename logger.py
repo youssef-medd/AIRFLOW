@@ -26,3 +26,11 @@ def get_logger(name: str = "airflow_ai", log_file: str = None) -> logging.Logger
         logger.addHandler(fh)
 
     return logger
+
+
+def log_metrics(logger, metrics: dict, prefix: str = "") -> None:
+    for key, value in metrics.items():
+        if isinstance(value, float):
+            logger.info("%s%s: %.4f", prefix, key, value)
+        else:
+            logger.info("%s%s: %s", prefix, key, value)
