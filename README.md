@@ -76,6 +76,9 @@ Le système **alerte le conducteur en temps réel** et peut partager les zones �
 
 ## ⚙️ Structure du Repo
 
-
+- `airflow.py` — pipeline principal
+- `ai_inference.py` — inférence temps réel
+- `cv_train.py` — entraînement du modèle
+- `sensor_gen.py` — génération de données capteurs
 
 
