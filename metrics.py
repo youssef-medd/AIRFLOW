@@ -34,3 +34,8 @@ def per_class_accuracy(confusion_mat: np.ndarray) -> dict:
         name: float(diag[i] / totals[i]) if totals[i] > 0 else 0.0
         for i, name in enumerate(LABEL_NAMES)
     }
+
+
+def mean_per_class_accuracy(confusion_mat: np.ndarray) -> float:
+    accs = per_class_accuracy(confusion_mat).values()
+    return float(np.mean(list(accs))) if accs else 0.0
