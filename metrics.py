@@ -39,3 +39,11 @@ def per_class_accuracy(confusion_mat: np.ndarray) -> dict:
 def mean_per_class_accuracy(confusion_mat: np.ndarray) -> float:
     accs = per_class_accuracy(confusion_mat).values()
     return float(np.mean(list(accs))) if accs else 0.0
+
+
+def worst_class_accuracy(confusion_mat: np.ndarray) -> tuple[str, float]:
+    accs = per_class_accuracy(confusion_mat)
+    if not accs:
+        return ("", 0.0)
+    name, acc = min(accs.items(), key=lambda kv: kv[1])
+    return (name, float(acc))
