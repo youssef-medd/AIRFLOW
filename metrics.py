@@ -47,3 +47,11 @@ def worst_class_accuracy(confusion_mat: np.ndarray) -> tuple[str, float]:
         return ("", 0.0)
     name, acc = min(accs.items(), key=lambda kv: kv[1])
     return (name, float(acc))
+
+
+def best_class_accuracy(confusion_mat: np.ndarray) -> tuple[str, float]:
+    accs = per_class_accuracy(confusion_mat)
+    if not accs:
+        return ("", 0.0)
+    name, acc = max(accs.items(), key=lambda kv: kv[1])
+    return (name, float(acc))
