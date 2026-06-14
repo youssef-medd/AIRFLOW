@@ -55,3 +55,9 @@ def best_class_accuracy(confusion_mat: np.ndarray) -> tuple[str, float]:
         return ("", 0.0)
     name, acc = max(accs.items(), key=lambda kv: kv[1])
     return (name, float(acc))
+
+
+def accuracy_gap(confusion_mat: np.ndarray) -> float:
+    _, best = best_class_accuracy(confusion_mat)
+    _, worst = worst_class_accuracy(confusion_mat)
+    return float(best - worst)
