@@ -66,3 +66,8 @@ def accuracy_gap(confusion_mat: np.ndarray) -> float:
 def accuracy_std(confusion_mat: np.ndarray) -> float:
     accs = list(per_class_accuracy(confusion_mat).values())
     return float(np.std(accs)) if accs else 0.0
+
+
+def median_class_accuracy(confusion_mat: np.ndarray) -> float:
+    accs = list(per_class_accuracy(confusion_mat).values())
+    return float(np.median(accs)) if accs else 0.0
