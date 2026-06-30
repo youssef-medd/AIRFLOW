@@ -78,3 +78,11 @@ def class_accuracy_range(confusion_mat: np.ndarray) -> tuple[float, float]:
     if not accs:
         return (0.0, 0.0)
     return (float(min(accs)), float(max(accs)))
+
+
+def accuracy_iqr(confusion_mat: np.ndarray) -> float:
+    accs = list(per_class_accuracy(confusion_mat).values())
+    if len(accs) < 2:
+        return 0.0
+    q75, q25 = np.percentile(accs, [75, 25])
+    return float(q75 - q25)
