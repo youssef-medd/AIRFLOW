@@ -71,3 +71,10 @@ def accuracy_std(confusion_mat: np.ndarray) -> float:
 def median_class_accuracy(confusion_mat: np.ndarray) -> float:
     accs = list(per_class_accuracy(confusion_mat).values())
     return float(np.median(accs)) if accs else 0.0
+
+
+def class_accuracy_range(confusion_mat: np.ndarray) -> tuple[float, float]:
+    accs = list(per_class_accuracy(confusion_mat).values())
+    if not accs:
+        return (0.0, 0.0)
+    return (float(min(accs)), float(max(accs)))
