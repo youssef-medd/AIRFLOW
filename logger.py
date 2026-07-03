@@ -34,3 +34,10 @@ def log_metrics(logger, metrics: dict, prefix: str = "") -> None:
             logger.info("%s%s: %.4f", prefix, key, value)
         else:
             logger.info("%s%s: %s", prefix, key, value)
+
+
+def log_section(logger, title: str, width: int = 60, char: str = "=") -> None:
+    bar = char * width
+    logger.info(bar)
+    logger.info(title.center(width))
+    logger.info(bar)
