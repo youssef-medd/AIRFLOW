@@ -91,3 +91,8 @@ def accuracy_iqr(confusion_mat: np.ndarray) -> float:
 def classes_above_threshold(confusion_mat: np.ndarray, threshold: float = 0.8) -> int:
     accs = per_class_accuracy(confusion_mat).values()
     return int(sum(1 for a in accs if a >= threshold))
+
+
+def classes_below_threshold(confusion_mat: np.ndarray, threshold: float = 0.5) -> int:
+    accs = per_class_accuracy(confusion_mat).values()
+    return int(sum(1 for a in accs if a < threshold))
