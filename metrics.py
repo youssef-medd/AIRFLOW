@@ -96,3 +96,8 @@ def classes_above_threshold(confusion_mat: np.ndarray, threshold: float = 0.8) -
 def classes_below_threshold(confusion_mat: np.ndarray, threshold: float = 0.5) -> int:
     accs = per_class_accuracy(confusion_mat).values()
     return int(sum(1 for a in accs if a < threshold))
+
+
+def sorted_class_accuracies(confusion_mat: np.ndarray, descending: bool = True) -> list[tuple[str, float]]:
+    accs = per_class_accuracy(confusion_mat).items()
+    return sorted(((n, float(a)) for n, a in accs), key=lambda kv: kv[1], reverse=descending)
